@@ -1,12 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 
-# MongoDB connection
-client = MongoClient('mongodb://localhost:27017/')
-db = client['house_management']
+# MongoDB connection using environment variables
+client = MongoClient(os.getenv('MONGO_URI'))
+db = client[os.getenv('MONGO_DB')]
 cauan = db['cauan']
 cau_sieu = db['cau_sieu']
 
@@ -135,4 +140,4 @@ def delete_member(book_type, record_id, member_index):
     return redirect(url_for(f'{book_type}_page'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=os.getenv('FLASK_DEBUG', 'False').lower() == 'true')
